@@ -2,8 +2,11 @@
 
 # dependencies
 /node_modules
+/docker
+/runtime
 /.pnp
 .pnp.js
+.idea
 
 # testing
 /coverage

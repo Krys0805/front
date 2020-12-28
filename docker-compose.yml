@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx:
+    build: docker/nginx
+    container_name: krys-nginx-front
+    working_dir: /var/www/krys.local
+    environment:
+      FASTCGI_CONNECT_TIMEOUT: 300s
+      FASTCGI_READ_TIMEOUT: 300s
+      FASTCGI_SEND_TIMEOUT: 300s
+      CLIENT_MAX_BODY_SIZE: 100M
+    volumes:
+      - .:/var/www/krys.local
+      - ./runtime/logs/nginx:/var/log/nginx
+      - ./tools/docker-local/nginx/sites-enabled:/etc/nginx/sites-enabled
+    ports:
+      - "${LOCAL_NGINX_PORT}:80"
+    networks:
+      - devnetwork
+  server:
+    build: docker/node
+    container_name: krys-front
+    working_dir: /var/www
+    command: sh -c "npm run build && npm run watch"
+    volumes:
+      - ./:/var/www
+    networks:
+      - devnetwork
+networks:
+  devnetwork:
+    external: true
